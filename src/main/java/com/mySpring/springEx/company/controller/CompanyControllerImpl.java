@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mySpring.springEx.company.service.CompanyService;
 import com.mySpring.springEx.company.vo.CompanyVO;
-import com.mySpring.springEx.course.vo.CourseVO;
 
 @Controller("companyController")
 public class CompanyControllerImpl implements CompanyController{

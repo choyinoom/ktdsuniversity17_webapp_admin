@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mySpring.springEx.course.vo.CourseVO;
+import com.mySpring.springEx.courseCategory.service.CourseCategoryService;
 import com.mySpring.springEx.syllabus.service.SyllabusService;
 import com.mySpring.springEx.syllabus.vo.SyllabusVO;
 
@@ -23,6 +25,10 @@ public class SyllabusControllerImpl implements SyllabusController{
 	
 	@Autowired
 	private SyllabusService syllabusService;
+	
+	@Autowired
+	CourseCategoryService courseCategoryService;
+	
 	@Autowired
 	SyllabusVO syllabusVO;
 	
@@ -58,6 +64,20 @@ public class SyllabusControllerImpl implements SyllabusController{
 	}
 	
 	@Override
+	@ResponseBody
+	@RequestMapping(value="/syllabus/removeCheckedSyllabuses.do", method = RequestMethod.POST)
+	public int removeCheckedSyllabuses(String [] arr, HttpServletRequest request, HttpServletResponse response) throws Exception{
+		request.setCharacterEncoding("utf-8");
+		System.out.println(arr.length);
+		int result = 0;
+		for(int i = 0; i < arr.length; i++) {
+			System.out.println(Integer.parseInt(arr[i]));
+			result = syllabusService.removeSyllabus(Integer.parseInt(arr[i]));
+		}
+		return result;
+	}
+	
+	@Override
 	@RequestMapping(value="/syllabus/updateSyllabusForm.do", method = RequestMethod.GET)
 	public ModelAndView updateSyllabusForm(@RequestParam("id") int id, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
@@ -67,6 +87,8 @@ public class SyllabusControllerImpl implements SyllabusController{
 		mv.setViewName(viewName);
 		SyllabusVO syllabusVO = syllabusService.selectSyllabus(id);
 		mv.addObject("syllabusVO", syllabusVO);
+		List courseCategoryList = courseCategoryService.listAllCourseCategories();
+		mv.addObject("courseCategoryList", courseCategoryList);
 		return mv;
 	}
 	
@@ -77,6 +99,7 @@ public class SyllabusControllerImpl implements SyllabusController{
 		request.setCharacterEncoding("utf-8");
 		int result = 0;
 		result = syllabusService.updateSyllabus(syllabusVO);
+		
 		ModelAndView mav = new ModelAndView("redirect:/syllabus/listSyllabuses.do");
 		return mav;
 	}
@@ -89,8 +112,8 @@ public class SyllabusControllerImpl implements SyllabusController{
 		String viewName = (String)request.getAttribute("viewName");
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName(viewName);
-		SyllabusVO vo = syllabusService.selectSyllabus(id);
-		mv.addObject("vo", vo);
+		SyllabusVO syllabusVO = syllabusService.selectSyllabus(id);
+		mv.addObject("syllabusVO", syllabusVO);
 		return mv;
 	}
 	
@@ -107,7 +130,10 @@ public class SyllabusControllerImpl implements SyllabusController{
 		HttpSession session = request.getSession();
 		session.setAttribute("action", action);  
 		ModelAndView mav = new ModelAndView();
+		List courseCategoryList = courseCategoryService.listAllCourseCategories();
+		
 		mav.addObject("result",result);
+		mav.addObject("courseCategoryList", courseCategoryList);
 		mav.setViewName(viewName);
 		return mav;
 	}

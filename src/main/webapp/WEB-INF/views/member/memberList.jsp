@@ -75,21 +75,21 @@
 </script>
 <style>
 /* 리스트 페이지 스타일 준오형 만드실 때 지워주세요!!! */
-.pageNumber{
+{
 	align-items: center;
 	justify-content : center;
 	text-align : center;
 }
 
-.pageNumber ul {
+ul {
    list-style-type: none;
 }
 
-.pageNumber ul li {
+ul li {
    float: left;
 }
 
-.pageNumber ul li a {
+ul li a {
    color: black;
    font-weight: 400;
    padding : 5px 15px;
@@ -185,7 +185,7 @@
 </table>
 
 <!-- 전체 페이지개수에 의한 페이지 리스트 띄우기 -->
-<div class="pageNumber" align="center" style="width: 80%; height: 10%;">
+<div class="pageNumberList">
 	<ul>
 		<c:if test="${pageMaker.prev }">
 			<c:choose>
@@ -223,10 +223,7 @@
 				</c:if>
 	</ul>
 </div>
-<button type="button" onclick="location.href='${contextPath}/member/memberForm.do'" style="width: 5%;">등록</button>
-<button type="button" onclick='getCheckList()' style="width: 5%;">삭제</button>
-<!-- 등록 버튼 추가해서 함수 실행하게 만들어야함 -->
-<%-- 
-      <td><a href="${contextPath}/member/removeMember.do?id=${member.id }">삭제</a></td> --%>
+<button onclick="location.href='${contextPath}/member/memberForm.do'" style="width: 5%;">등록</button>
+<button onclick='getCheckList()' style="width: 5%;">삭제</button>
 </body>
 </html>

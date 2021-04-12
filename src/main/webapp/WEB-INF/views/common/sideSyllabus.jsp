@@ -14,6 +14,6 @@
 	<h1>
 		<a href="${contextPath}/course/listCourses.do"  class="no-underline">과정관리</a><br>
 		<a href="${contextPath}/syllabus/listSyllabuses.do">강의계획서관리</a><br>
-		<a href="#"  class="no-underline">카테고리관리</a><br>
+		<a href="${contextPath}/courseCategory/listAllCourseCategories.do"  class="no-underline">카테고리관리</a><br>
 	</h1>
 	 

@@ -69,7 +69,7 @@ public class MemberControllerImpl   implements MemberController {
 		} else {
 			perPage = 10; // 기본 10개로 지정
 		}
-		System.out.println("전달 받은 페이지 번호 page:"+page); // 전달 받은 페이지 번호 page 
+		System.out.println("전달 받은 페이지 번호 page:" + page); // 전달 받은 페이지 번호 page 
 		System.out.println("리스트 띄울 개수 Perpage:"+perPage); // 전달 받은 페이지 번호 page 
 		
 		List membersList = null; 
@@ -118,8 +118,8 @@ public class MemberControllerImpl   implements MemberController {
 		model.addAttribute("members", memberService.listCriteria(criteria));
 		return "/member/list_criteria";
 		
-	} 
-	
+	}
+
 	//페이지 개수가 어떻게 나눠지는지 확인해보며 연습할 페이지로 -> 실제 구현할 때는 필요없을 예정
 	@RequestMapping(value = "/member/listPaging.do", method = RequestMethod.GET)
 	public String listPaging(Model model, Criteria criteria) throws Exception {
@@ -131,9 +131,7 @@ public class MemberControllerImpl   implements MemberController {
 		model.addAttribute("members", memberService.listCriteria(criteria));
 		model.addAttribute("pageMaker", pageMaker);
 		return "/member/list_paging";
-		
 	}
-	
 
 	@Override
 	@RequestMapping(value="/member/addMember.do" ,method = RequestMethod.POST)
@@ -145,7 +143,7 @@ public class MemberControllerImpl   implements MemberController {
 		ModelAndView mav = new ModelAndView("redirect:/member/listMembers.do");
 		return mav;
 	}
-	
+
 	@Override
 	@ResponseBody
 	@RequestMapping(value="/member/idCheckMember.do", method = RequestMethod.POST)

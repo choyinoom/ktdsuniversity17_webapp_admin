@@ -19,5 +19,6 @@
 		<typeAlias type="com.mySpring.springEx.manager.vo.ManagerVO"  alias="managerVO" />
 		<typeAlias type="com.mySpring.springEx.company.vo.CompanyVO"  alias="companyVO" />
 		<typeAlias type="com.mySpring.springEx.enrollment.vo.EnrollmentVO"  alias="enrollmentVO" />
+		<typeAlias type="com.mySpring.springEx.courseCategory.vo.CourseCategoryVO"  alias="courseCategoryVO" />
 	</typeAliases>
 </configuration>

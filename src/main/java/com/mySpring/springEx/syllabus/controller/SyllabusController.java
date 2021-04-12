@@ -17,6 +17,8 @@ public interface SyllabusController {
 	public ModelAndView updateSyllabusForm(@RequestParam("id")int id, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	public ModelAndView selectSyllabus(int id, HttpServletRequest request, HttpServletResponse response) throws Exception;
 	public ModelAndView updateSyllabus(SyllabusVO syllabusVO, HttpServletRequest request, HttpServletResponse response) throws Exception;
+	int removeCheckedSyllabuses(String[] arr, HttpServletRequest request, HttpServletResponse response)
+			throws Exception;
 			
 
 }

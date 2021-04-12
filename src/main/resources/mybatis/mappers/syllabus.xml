@@ -18,28 +18,41 @@
         <result property="modDate" column="slb_mod_date" />
         <result property="days" column="slb_days" />
         <result property="time" column="slb_time" />
+        <collection property="courseCategoryVO" resultMap="crscResult" />
 	</resultMap> 
 	
+	<resultMap id="crscResult" type="CourseCategoryVO">
+		<result property="id" column="crs_category_id" />
+		<result property="name" column="crs_category_name" />
+	</resultMap>
+	
+	 <sql id="syllabus-columns">
+   	<![CDATA[
+   		S.slb_id as slb_id, S.slb_name as slb_name, S.slb_report_name as slb_report_name, S.slb_type as slb_type, S.slb_category as slb_category, 
+         S.slb_overview as slb_overview, S.slb_objectives as slb_objectives, S.slb_target as slb_target, S.slb_contents as slb_contents, SUBSTR(S.slb_join_date, 0, 10) as slb_join_date,
+          SUBSTR(S.slb_mod_date, 0, 10) as slb_mod_date, S.slb_days as slb_days, S.slb_time as slb_time, C.crs_category_id as crs_category_id, C.crs_category_name as crs_category_name FROM syllabus S
+          LEFT JOIN course_category C
+          ON s.crs_category_id = c.crs_category_id
+   	]]>
+   </sql>
+	
 	<select id="selectAllSyllabusList" resultMap="syllabusResult">
-      <![CDATA[
-         SELECT slb_id, slb_name, slb_report_name, slb_type, slb_category, 
-         slb_overview, slb_objectives, slb_target, slb_contents, SUBSTR(slb_join_date, 0, 10) as slb_join_date,
-          SUBSTR(slb_mod_date, 0, 10) as slb_mod_date, slb_days, slb_time FROM syllabus
-      ]]>
+         SELECT  <include refid="syllabus-columns"></include> 
+         ORDER BY slb_join_date
 	</select>
 	
+		
 	<select id="selectSyllabus" parameterType="int" resultMap="syllabusResult">
-	 <![CDATA[
-	 	select * from syllabus where slb_id = #{id }
-	 ]]>
+	 	SELECT  <include refid="syllabus-columns"></include>
+	 	WHERE slb_id = #{id}
 	</select>
 	
 	<insert id="insertSyllabus" parameterType="SyllabusVO">
 	  <![CDATA[
 	  	insert into syllabus(slb_id, slb_name, slb_report_name, slb_type, slb_category, 
-	  	slb_overview, slb_objectives, slb_target, slb_contents, slb_days, slb_time)
+	  	slb_overview, slb_objectives, slb_target, slb_contents, slb_days, slb_time, crs_category_id)
 	  	values(slb_seq.NEXTVAL, #{name}, #{reportName}, #{type}, #{category}, 
-	  	#{overview}, #{objectives}, #{target}, #{contents}, #{days}, #{time})
+	  	#{overview}, #{objectives}, #{target}, #{contents}, #{days}, #{time}, #{courseCategoryVO.id})
 	  ]]>
 	</insert>
 	
@@ -47,8 +60,8 @@
 	 <![CDATA[
 	 	update syllabus set slb_name = #{name}, slb_report_name = #{reportName}, slb_type = #{type},
 		slb_category = #{category}, slb_overview = #{overview}, slb_objectives = #{objectives},
-		slb_mod_date = TO_CHAR(SYSDATE,'YYYY-MM-DD HH24:MM:SS'), slb_target = #{target}, slb_contents = #{contents},
-		slb_days = #{days}, slb_time = #{time}
+		slb_target = #{target}, slb_contents = #{contents}, slb_mod_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:MISS'),
+		slb_days = #{days}, slb_time = #{time}, crs_category_id = #{courseCategoryVO.id}
 		where slb_id = #{id}
 	 ]]> 
 	</update>

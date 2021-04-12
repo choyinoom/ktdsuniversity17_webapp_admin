@@ -8,7 +8,6 @@
   request.setCharacterEncoding("UTF-8");
 %>    
 
-
 <html>
 <head>
 <style>
@@ -20,14 +19,37 @@
 </head>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
-	/* function fn_syllabusForm(isLogOn,syllabusForm,loginForm,syllabusId){
-	  if(isLogOn != '' && isLogOn != 'false'){
-	    location.href=syllabusForm;
-	  }else{
-	    alert("로그인 후 과정 등록이 가능합니다.")
-	    location.href=loginForm+'?action=/syllabus/updateSyllabusForm.do?id='+syllabusId;
-	  }
-	} */
+
+	function getCheckListRemove() {
+		var length = $("input:checkbox[name='selectedCheckbox']:checked").length;
+		alert(length);
+		var arr = new Array();
+		$("input:checkbox[type=checkbox]:checked").each(function(index) {
+			/* alert($(this).attr('id')); */
+			arr.push($(this).attr('id'));
+		})
+		
+		if(length == 0){
+			alert("선택된 값이 없습니다.");
+			return false;
+		} else{
+			$.ajax({
+				type: 'post',
+				url: '${contextPath}/syllabus/removeCheckedSyllabuses.do',
+				traditional : true, //Array 형태로 보내려면 설정 해줘야함
+				data: {arr : arr},
+				
+				success: function(data) {
+					alert('데이터 받기 성공');
+					alert(data);
+					window.location.href = "${contextPath}/syllabus/listSyllabuses.do";
+				}, error:function(data,request,status,error){
+		             alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		             
+		        }
+			})
+		}
+	}
 	
 	$(function(){
 		$('#selectAll').click(function(){
@@ -45,24 +67,22 @@
     <tr align="center">
       <td><input type="checkbox" id="selectAll"></td>
       <td><b>강의명</b></td>
-      <td><b>보고용</b></td>
+      <td><b>1차 분류</b></td>
+      <td><b>2차 분류</b></td>
       <td><b>가입일</b></td>
-      <td><b>수정</b></td>
-      <td><b>삭제</b></td>
    </tr>
    
  <c:forEach var="syllabus" items="${syllabusesList}" >     
    <tr align="center">
-      <td><input type="checkbox"></td>
+      <td><input type="checkbox" name="selectedCheckbox" id="${syllabus.id }"></td>
       <td><a class='cls1' href="${contextPath}/syllabus/selectSyllabus.do?id=${syllabus.id}">${syllabus.name}</a></td>
-      <td>${syllabus.reportName}</td>
+      <td>${syllabus.type }</td>
+      <td>${syllabus.courseCategoryVO.name }</td>
       <td>${syllabus.joinDate}</td>
-      <td><a href="${contextPath }/syllabus/updateSyllabusForm.do?id=${syllabus.id}">수정하기</a></td>
-      <td><a href="${contextPath }/syllabus/removeSyllabus.do?id=${syllabus.id}">삭제하기</a></td>
     </tr>
   </c:forEach>   
 </table>
-<button type="button" onclick="location.href='${contextPath}/syllabus/syllabusForm.do'" style="width: 5%;">등록</button>
-<button type="button" onclick="location.href='#'" style="width: 5%;">삭제</button>
+<button onclick="location.href='${contextPath}/syllabus/syllabusForm.do'" style="width: 5%;">등록</button>
+<button onclick="getCheckListRemove()" style="width: 5%;">삭제</button>
 </body>
 </html>

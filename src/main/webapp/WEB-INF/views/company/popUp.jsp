@@ -42,7 +42,7 @@
 		<form action="#">
 			<table>
 				<tr>
-					<td> 회사 유형 <select name="searchCompany"><option>회사명</option><option>사업 번호</option></select></td>
+					<td> 회사 유형 <select name="searchType"><option>회사명</option><option>사업 번호</option></select></td>
 				</tr>
 				<tr>
 					<td> 단어 검색 <input type="text" name="searchText" id="search" value="${searchText }" style="width: 100px; margin-right: 20px;">&nbsp;<input type="submit" value="검색"></td>
