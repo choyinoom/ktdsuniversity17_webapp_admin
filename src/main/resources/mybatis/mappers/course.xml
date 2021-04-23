@@ -63,7 +63,8 @@
 	
 	<update id="updateCourse" parameterType="courseVO">
 		<![CDATA[
-			update course set crs_start_date = #{startDate}, crs_end_date = #{endDate}, crs_start_time = #{startTime}, crs_end_time = #{endTime},
+			update course 
+			set crs_start_date = #{startDate}, crs_end_date = #{endDate}, crs_start_time = #{startTime}, crs_end_time = #{endTime},
 			crs_capacity = #{capacity}, crs_classroom = #{classroom}, crs_banner_img = #{bannerImg}, slb_id = #{slb_id}
 			where crs_id = #{id}
 		]]>

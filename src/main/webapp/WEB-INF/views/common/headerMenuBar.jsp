@@ -55,6 +55,7 @@ img {
 }
 </style>
 <body>
+
 	<header>
 		<div class="logo">
 			<a href="${contextPath}/member/listMembers.do"><img
@@ -65,20 +66,21 @@ img {
 			<ul>
 				<li class="header_menu"><a
 					href="${contextPath}/member/listMembers.do">회원관리</a></li>
-				<li class="header_menu"><a
-					href="${contextPath}/course/listCourses.do">과정관리</a></li>
-				<li class="header_menu"><a
-					href="${contextPath}/enrollment/listEnrollments.do">수강관리</a></li>
-				<li class="header_menu"><a href="#">설문조사관리</a></li>
-				<li class="header_menu"><a href="#">게시판관리</a></li>
-				<li><c:choose>
-						<c:when test="${isLogOn == true  && manager!= null}">
-							<a href="${contextPath}/manager/logout.do">로그아웃</a>
-						</c:when>
-						<c:otherwise>
-							<a href="${contextPath}">로그인</a>
-						</c:otherwise>
-					</c:choose></li>
+        <li class="header_menu"><a
+          href="${contextPath}/course/listCourses.do">과정관리</a></li>
+        <li class="header_menu"><a
+          href="${contextPath}/enrollment/listEnrollments.do">수강관리</a></li>
+        <li class="header_menu"><a href="#">설문조사관리</a></li>
+        <li class="header_menu"><a
+           href="${contextPath}/board/listArticles.do">게시판관리</a></li>
+        <li><c:choose>
+					<c:when test="${isLogOn == true  && manager!= null}">
+						<a href="${contextPath}/manager/logout.do">로그아웃</a>
+					</c:when>
+					<c:otherwise>
+						<a href="${contextPath}">로그인</a>
+					</c:otherwise>
+				</c:choose></li>
 			</ul>
 		</div>
 	</header>

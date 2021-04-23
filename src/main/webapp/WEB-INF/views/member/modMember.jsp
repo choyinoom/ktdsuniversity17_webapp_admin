@@ -142,7 +142,7 @@
 	    <tr>
 	       <td width="200"><p align="right">회사명</td>
 	       <td width="400"><p><input type="text" name="companyName" id="companyName" value="${vo.companyName }" readonly>&nbsp;&nbsp;&nbsp;
-	       <a onclick="popup()" >회사 수정</a></td>
+	       <a onclick="popup()" style=cursor:pointer >회사 수정</a></td>
 	    </tr>
 	    <tr>
 	       <td width="200"><p>&nbsp;</p></td>

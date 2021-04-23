@@ -29,6 +29,10 @@
 		<result property="joinDate" column="crs_join_date" />
 		<result property="bannerImg" column="crs_banner_img" />
 		<result property="slbId" column="slb_id" />
+		<result property="slbId" column="slb_id" />	
+		<result property="crsrsdate" column="crs_rs_date" />
+		<result property="crsredate" column="crs_re_date" />
+
 	</resultMap>
 
 	<resultMap id="syllabusResult" type="syllabusVO">
@@ -56,10 +60,15 @@
 		<result property="modDate" column="enrd_mod_date" />
 		<result property="completeDate" column="enrd_complete_date" /> <!-- 이수일 추가 04/08 -->
 		<collection property="memberVO" resultMap="memResult" />
+		<result property="completeDate" column="enrd_complete_date" />
+		<collection property="memberVO" resultMap="memResult"/>
 		<collection property="courseVO" resultMap="courseResult" />
 		<collection property="syllabusVO"
 			resultMap="syllabusResult" />
 	</resultMap>
+	
+<!-- ////////////////새로 추가한것 -->
+
 
 	<sql id="enrollment-columns">
    	<![CDATA[
@@ -74,6 +83,65 @@
 			select e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, m.mem_name as mem_name,
 			 m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name, e.enrd_stat as enrd_stat, enrd_join_date as enrd_join_date
 				from enrollment_detail E 
+   <sql id="enrollment-columns">
+   	<![CDATA[
+         	enrd_id, mem_id, mem_phone, mem_name, enrd_complete_date,
+        	mem_email, mem_company_name, slb_name, enrd_stat, enrd_join_date
+   	]]>
+   </sql>
+	
+	<!-- 검색 -->
+	<select id="selectBySearchEnrollmentList" resultMap="enrdResult" parameterType="java.util.Map" >
+         SELECT 
+         	e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, 
+         	m.mem_name as mem_name, substr(enrd_complete_date,1,10) as enrd_complete_date,
+          	m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name,
+          	e.enrd_stat as enrd_stat, substr(enrd_join_date,1,10) as enrd_join_date
+
+         FROM enrollment_detail E 
+            LEFT JOIN member M
+            ON
+                e.mem_id = m.mem_id
+            LEFT JOIN course C
+            ON
+                e.crs_id = c.crs_id
+            LEFT JOIN syllabus S
+            ON
+                c.slb_id = s.slb_id
+        WHERE enrd_stat != '취소'
+	     <choose>
+         	<when test="searchType == 'name'">
+         		AND m.mem_name LIKE '%' || #{searchText} || '%'
+         	</when>
+         	<when test="searchType == ''">
+         		AND m.mem_name LIKE '%' || #{searchText} || '%'
+         	</when>
+         	<when test="searchType == 'companyName'">
+         		AND m.mem_company_name LIKE '%' || #{searchText} || '%'
+         	</when>
+         	<when test="searchType == 'slbName'">
+         		AND s.slb_name LIKE '%' || #{searchText} || '%'
+         	</when>
+         	<when test="searchType == 'stat'">
+         		AND enrd_stat LIKE '%' || #{searchText} || '%'
+         	</when>
+         </choose>
+         
+	</select>
+	
+	<!-- 페이지 전체 리시트 뽑아주는 select list_paging -->
+	<select id="selectEnrollmentListByPaging" resultMap="enrdResult">
+		SELECT <include refid="enrollment-columns"></include> 
+		
+		FROM
+			(SELECT
+				ROW_NUMBER() OVER (ORDER BY enrd_id) NUM, 
+				e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, 
+        		m.mem_name as mem_name, substr(enrd_complete_date,1,10) as enrd_complete_date,
+        		m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name,
+        		e.enrd_stat as enrd_stat, substr(enrd_join_date,1,10) as enrd_join_date
+			FROM 
+				enrollment_detail E 
 				LEFT JOIN member M
 				ON
 				    e.mem_id = m.mem_id
@@ -83,15 +151,262 @@
 				LEFT JOIN syllabus S
 				ON
 				    c.slb_id = s.slb_id
+			
+         	WHERE enrd_stat != '취소'
+			ORDER BY enrd_id)
+		NUM BETWEEN #{page} AND 10
+
+	</select>
+	
+	
+	<!-- 기준으로 페이지 리시트 나누는 select list.jsp -->
+	<select id="listCriteria" resultMap="enrdResult">
+		SELECT
+			<include refid="enrollment-columns"></include>
+		FROM 
+			(select ROW_NUMBER() OVER (ORDER BY m.mem_join_date) NUM, 
+			e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, 
+        	m.mem_name as mem_name, substr(enrd_complete_date,1,10) as enrd_complete_date,
+        	m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name,
+        	e.enrd_stat as enrd_stat, substr(enrd_join_date,1,10) as enrd_join_date
+				FROM enrollment_detail E 
+            LEFT JOIN member M
+            ON
+                e.mem_id = m.mem_id
+            LEFT JOIN course C
+            ON
+                e.crs_id = c.crs_id
+            LEFT JOIN syllabus S
+            ON
+                c.slb_id = s.slb_id
+        WHERE enrd_stat != '취소'
+      		ORDER BY enrd_id)
+
+		WHERE  
+		NUM BETWEEN #{pageStart} 
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum}
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart})
+			</when>
+		</choose>
+		order by enrd_id
+	</select>
+	
+	<!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select -->
+	<select id="selectCriteriaBySearchEnrollmentList" resultMap="enrdResult">
+		SELECT
+			<include refid="enrollment-columns"></include>
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY m.mem_join_date) NUM, 
+				e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, 
+        		m.mem_name as mem_name, substr(enrd_complete_date,1,10) as enrd_complete_date,
+        		m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name,
+        		e.enrd_stat as enrd_stat, substr(enrd_join_date,1,10) as enrd_join_date
+			FROM 
+				enrollment_detail E 
+            	LEFT JOIN member M
+            		ON e.mem_id = m.mem_id
+            	LEFT JOIN course C
+            		ON e.crs_id = c.crs_id
+            	LEFT JOIN syllabus S
+            		ON c.slb_id = s.slb_id
+			WHERE enrd_stat != '취소'
+			<choose>
+	         	<when test="searchType == 'name'">
+	         		AND m.mem_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == ''">
+	         		AND m.mem_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == 'companyName'">
+	         		AND m.mem_company_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == 'slbName'">
+	         		AND s.slb_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == 'stat'">
+	         		AND enrd_stat LIKE '%' || #{searchText} || '%'
+	         	</when>
+         	</choose>
+			ORDER BY enrd_id)
+		WHERE NUM BETWEEN #{pageStart}
+			<choose>
+				<when test="#{perPageNum} == '10'">
+					AND #{perPageNum}
+				</when>
+				<when test="#{perPageNum} != '10'">
+					AND (#{perPageNum} + #{pageStart})
+				</when>
+			</choose>
+		ORDER BY enrd_id
+	</select>
+
+<!-- //////////////////////////////////////////////////// -->
+	
+	<!-- (등록관련) 수강신청 되어있는지 체크 -->
+	<select id="checkEnrollment" parameterType="enrollmentVO" resultMap="enrdResult">
+		<![CDATA[
+			SELECT crs_id
+			FROM enrollment_detail
+			WHERE mem_id = #{memberVO.id} AND crs_id = #{courseVO.id}
+    	]]>
+	</select>
+	
+	<!-- (등록관련) 수강신청 되어있는지 체크 -->
+	<select id="exceptEnrollment" parameterType="String" resultMap="enrdResult">
+		<![CDATA[
+				SELECT s.slb_name as slb_name, c.crs_id as crs_id
+				FROM syllabus s JOIN course c
+				on s.slb_id = c.slb_id
+				JOIN enrollment_detail e
+				on c.crs_id = e.crs_id
+				WHERE e.mem_id != #{memberVO.id}
+    	]]>
+	</select>
+	
+   <!-- 상세페이지 (상태) 수정 작업 -->
+  		<update id="modEnrollmentStat"  parameterType="enrollmentVO">
+    		UPDATE enrollment_detail
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="stat != null">enrd_stat = #{stat},</if>
+				<if test="completeDate != null">enrd_complete_date = #{completeDate},</if>
+			</trim>
+			WHERE enrd_id = #{id}
+   </update>
+   
+	<!-- 상세페이지 (회사) 수정 작업 -->
+  	<!--    <update id="modEnrollmentCompany"  parameterType="enrollmentVO">
+    		UPDATE member
+			SET
+			<choose>
+	         	<when test="memberVO.companyName != null">
+	         		mem_company_name = #{memberVO.companyName}
+	         	</when>
+			</choose>
+			WHERE mem_id IN (
+    			select mem_id 
+    			FROM enrollment_detail 
+    			WHERE enrd_id = #{id})
+   </update> -->
+   
+      <!-- 상세페이지 (회사) 수정 작업 -->
+  	<update id="modEnrollmentCompany"  parameterType="enrollmentVO">
+    		UPDATE member
+    		<trim prefix="SET" suffixOverrides=",">
+				<if test="memberVO.companyName != null">mem_company_name = #{memberVO.companyName},</if>
+			</trim>
+			WHERE mem_id IN (
+    			select mem_id 
+    			FROM enrollment_detail 
+    			WHERE enrd_id = #{id})
+   </update>
+   
+	<!-- 수강신청내역 리스트 -->
+	<select id="selectAllEnrollmentList" resultMap="enrdResult">
+		<![CDATA[
+			SELECT 
+				e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_name as mem_name,
+			 	m.mem_company_name as mem_company_name, s.slb_name as slb_name, e.enrd_stat as enrd_stat, 
+			 	substr(e.enrd_join_date, 1, 10) as enrd_join_date
+			FROM enrollment_detail E 
+				LEFT JOIN member M
+				ON e.mem_id = m.mem_id
+				LEFT JOIN course C
+				ON e.crs_id = c.crs_id
+				LEFT JOIN syllabus S
+				ON c.slb_id = s.slb_id
+			WHERE enrd_stat != '취소'
+			ORDER BY m.mem_name
 		]]>
 	</select>
 
+	
+	<!-- 상세 접수내용 페이지 -->
+	<select id="selectEnrollment"  resultMap="enrdResult"   parameterType="Int" >
+	<![CDATA[
+		SELECT
+			e.enrd_id as enrd_id,
+			m.mem_name as mem_name, m.mem_id as mem_id, m.mem_phone as mem_phone, m.mem_email as mem_email, m.mem_company_name as mem_company_name,
+			substr(e.enrd_join_date, 1, 10) as enrd_join_date,
+			e.enrd_stat as enrd_stat, substr(e.enrd_complete_date, 1, 10) as enrd_complete_date,
+			s.slb_type as slb_type, s.slb_category as slb_category, s.slb_name as slb_name, s.slb_report_name as slb_report_name,
+			c.crs_classroom as crs_classroom,
+			substr(c.crs_rs_date, 1, 10) as crs_rs_date, substr(c.crs_re_date, 1, 10) as crs_re_date, 
+			substr(c.crs_start_date, 1, 10) as crs_start_date, substr(c.crs_end_date, 1, 10) as crs_end_date, 
+			substr(c.crs_start_time, 11, 6) as crs_start_time, substr(crs_end_time, 11, 6) as crs_end_time, 
+			c.crs_capacity as crs_capacity,
+			s.slb_days as slb_days, s.slb_time as slb_time
+		FROM enrollment_detail E 
+			LEFT JOIN member M
+			ON
+			    e.mem_id = m.mem_id
+			LEFT JOIN course C
+			ON
+			    e.crs_id = c.crs_id
+			LEFT JOIN syllabus S
+			ON
+			    c.slb_id = s.slb_id	
+			where enrd_id=#{id} 	
+		]]>
+  	</select>
+  	
+   <!-- 등록 페이지 데이터 조회 -->
+	<select id="syllabusCourseEnrollment" resultMap="enrdResult">
+		<![CDATA[
+			SELECT s.slb_name as slb_name, c.crs_id as crs_id
+			FROM syllabus s, course c
+			WHERE s.slb_id = c.slb_id
+    	]]>
+	</select>
 
+	<!-- 수강신청 등록 -->
+	 <select id="addEnrollment" parameterType="enrollmentVO">
+		<![CDATA[
+			INSERT INTO enrollment_detail
+				VALUES(
+    			(SELECT NVL(MAX(enrd_id)+1,0) FROM enrollment_detail), 
+    			#{courseVO.id}, #{memberVO.id}, '신청', null, 
+    			to_char(sysdate, 'YYYY-MM-DD'), 
+                to_char(sysdate, 'YYYY-MM-DD')
+                )
+    	]]>
+	</select>
+	
+	<!-- 체크리스트 상태변경 (삭제) -->
+	<update id="updateDeleteEnrollments"  parameterType="int">
+    	<![CDATA[
+	    	UPDATE enrollment_detail
+			SET enrd_stat = '취소'
+			WHERE enrd_id = #{id}
+      	]]>      
+   </update> 
+   
+   <!-- 체크리스트 상태변경 (승인) -->
+   <update id="updateApproveEnrollments"  parameterType="int">
+    	<![CDATA[
+	    	UPDATE enrollment_detail
+			SET enrd_stat = '승인'
+			WHERE enrd_id = #{id}
+      	]]>      
+   </update> 
+   
+   <!-- 체크리스트 상태변경 (수료) -->
+   <update id="updateCompleteEnrollments"  parameterType="int">
+    	<![CDATA[
+	    	UPDATE enrollment_detail
+			SET enrd_stat = '수료', enrd_complete_date = sysdate
+			WHERE enrd_id = #{id}
+      	]]>      
+   </update> 
+	
 	<select id="selectAllCompletionList" resultMap="enrdResult">
 		<![CDATA[
-			select e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, m.mem_name as mem_name, substr(enrd_complete_date,1,10) as enrd_complete_date,
-			 m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name, e.enrd_stat as enrd_stat, substr(enrd_join_date,1,10) as enrd_join_date
-				from enrollment_detail E 
+			SELECT 	e.enrd_id as enrd_id, e.mem_id as mem_id, m.mem_phone as mem_phone, m.mem_name as mem_name, e.enrd_complete_date as enrd_complete_date,
+			 		m.mem_email as mem_email, m.mem_company_name as mem_company_name, s.slb_name as slb_name, e.enrd_stat as enrd_stat, enrd_join_date as enrd_join_date
+			FROM enrollment_detail E 
 				LEFT JOIN member M
 				ON
 				    e.mem_id = m.mem_id
@@ -241,6 +556,4 @@
 		</choose>
 		order by enrd_id
 	</select>
-
-
 </mapper>

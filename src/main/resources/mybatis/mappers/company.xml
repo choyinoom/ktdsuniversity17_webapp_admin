@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-   
+
 <mapper namespace="mapper.company">
 	<resultMap id="comResult" type="companyVO">
 		<result property="id" column="com_id" />
@@ -14,30 +14,313 @@
 		<result property="managerEmail" column="com_manager_email" />
 		<result property="contractStat" column="com_contract_stat" />
 		<result property="contractType" column="com_contract_type" />
+		<result property="homePage" column="com_homepage" />
+		<result property="address" column="com_address" />
+		<result property="contractAgree" column="com_contract_agree" />
+		<result property="companyTel" column="com_tel" />
 	</resultMap>
-	
+
+	<!-- 전체 회사리스트 출력  -->
 	<select id="selectAllCompaniesList" resultMap="comResult">
 		<![CDATA[
 			SELECT com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date, SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name, 
-			com_manager_phone, com_manager_email, com_contract_stat, com_contract_type from company
+			com_manager_phone, com_manager_email, com_contract_stat, com_contract_type, com_homePage, com_address, com_contract_agree, com_tel from company
+			where com_contract_type != '탈퇴'
+			order by com_reg_date desc
 			]]>
 	</select>
-	
-	<select id="selectBySearchCompaniesList" resultMap="comResult" parameterType="companyVO" >
-         select * from company         
-	     <choose>
-         	<when test="name != null and contractName == ''">
-         		WHERE com_name LIKE '%' || #{name} || '%'
-         	</when>
-         	<when test="contractName != null and name == ''">
-         		WHERE com_contract_name LIKE '%' || #{contractName} || '%'
-         	</when>
-         </choose>
+
+	<!-- 회사 검색 할 수 있는 메소드 -->
+	<select id="selectBySearchCompaniesList" resultMap="comResult" parameterType="java.util.Map">
+		select * from company
+		<choose>
+			<when test="searchType == 'name'">
+				WHERE upper(com_name) LIKE '%' || upper(#{searchText}) || '%'
+			</when>
+			<when test="searchType =='contractName'">
+				WHERE upper(com_contract_name) LIKE '%' || upper(#{searchText}) || '%'
+			</when>
+		</choose>
+		order by com_reg_date desc
 	</select>
 	
-	<select id="selectCompany" resultMap="comResult" parameterType="String">
+	<!-- 페이지 전체 리스트 뽑아주는 select list_paging -->
+	<select id="selectCompanyListByPaging" resultMap="comResult">
+		SELECT com_id,
+		com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel
+		FROM (select ROW_NUMBER() OVER (ORDER BY com_reg_date) NUM,com_id,
+		com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel from company where com_contract_type != '탈퇴' order by com_reg_date desc)
+		where NUM between #{page} and 10
+	</select>
+	
+	<!-- 기준으로 페이지 리시트를 나누는 select list.jsp (학생관리 회사수정 팝업창에서도 쓰인다.) -->
+	<select id="listCriteria" resultMap="comResult">
+		SELECT
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel
+		FROM (select ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM,
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel from company where com_contract_type != '탈퇴' ORDER BY com_reg_date desc)
+		WHERE NUM BETWEEN #{pageStart} 
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum} - 1
+				AND com_contract_type != '탈퇴'
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+				AND com_contract_type != '탈퇴'
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+	
+	<!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select -->
+	<select id="selectCriteriaBySearchCompanyList" resultMap="comResult">
+		SELECT 
+			com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+			SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+			com_manager_phone, com_manager_email, com_contract_stat,
+			com_contract_type, com_homePage, com_address, com_contract_agree, com_tel
+		FROM (SELECT ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM,
+				com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+				SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+				com_manager_phone, com_manager_email, com_contract_stat,
+				com_contract_type, com_homePage, com_address, com_contract_agree, com_tel 
+			from company 
+		<choose>
+			<when test="searchType == 'name'">
+				WHERE com_name LIKE '%' || #{searchText} || '%'
+				AND com_contract_type != '탈퇴'
+			</when>
+			<when test="searchType == 'contractName'">
+				WHERE com_contract_name LIKE '%' || #{searchText} || '%'
+				AND com_contract_type != '탈퇴'
+			</when>
+		</choose>
+		ORDER BY com_reg_date desc)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum} - 1
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+
+	<!-- 협력회사 출력하기 -->
+	<select id="selectAllPartnersList" resultMap="comResult">
 		<![CDATA[
-			select * from company where com_id = #{id}
+			SELECT com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date, SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name, 
+			com_manager_phone, com_manager_email, com_contract_stat, com_contract_type, com_homePage, com_address, com_contract_agree, com_tel from company 
+			where com_contract_stat = '협력사'
+			order by com_reg_date desc
 		]]>
 	</select>
+	
+	<!-- 협력회사 검색 할 수 있는 메소드 -->
+	<select id="selectBySearchPartnersList" resultMap="comResult" parameterType="java.util.Map">
+		select * from company
+		<choose>
+			<when test="searchType == 'name'">
+				where upper(com_name) like '%' || upper(#{searchText}) || '%'
+			</when>
+			<when test="searchType == 'contractName'">
+				where upper(com_contract_name) like '%' || upper(#{searchText}) || '%'
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+	
+	<!-- 페이지 전체 협력회사 리스트 뽑아주는 select list_paging -->
+	<select id="selectPartnerListByPaging" resultMap="comResult">
+		SELECT com_id,
+		com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel
+		FROM (select ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM,com_id,
+		com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel from company WHERE com_contract_stat = '협력사' order by com_reg_date desc)
+		where NUM between #{page} and 10
+	</select>
+	
+	<!-- 기준으로 협력회사 페이지 리시트 나누는 select list.jsp -->
+	<select id="partnerListCriteria" resultMap="comResult">
+		SELECT
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel
+		FROM (select ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM,
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree,
+		com_tel from company WHERE com_contract_stat = '협력사' ORDER BY com_reg_date desc)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum} - 1
+				AND com_contract_stat = '협력사'
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+				AND com_contract_stat = '협력사'
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+	
+	<!-- 검색과 기준에 의해 나눠지는 협력회사 리스트 뽑기 select -->
+	<select id="selectCriteriaBySearchPartnerList" resultMap="comResult">
+		SELECT 
+			com_id, 
+			com_name,
+			com_contract_type,
+			com_contract_name,
+			com_manager_phone, 
+			SUBSTR(com_reg_date, 0, 10) as com_reg_date
+		FROM (
+			SELECT 
+				com_id, 
+				com_name,
+				com_contract_type,  
+				com_contract_name,
+				com_manager_phone,
+				SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+				ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM 
+			FROM company 
+			WHERE com_contract_stat = '협력사'
+		<choose>
+			<when test="searchType == 'name'">
+				AND com_name LIKE '%' || #{searchText} || '%'
+			</when>
+			<when test="searchType == 'contractName'">
+				AND com_contract_name LIKE '%' || #{searchText} || '%'
+			</when>
+		</choose>
+		ORDER BY NUM)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum} - 1
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+	</select>
+	
+	
+	<!-- popUp -->
+	 
+	<!-- 학생관리의 회사수정 팝업에서 검색 할 수 있는 메소드 -->
+	<select id="selectBySearchFromPopUp" resultMap="comResult" parameterType="java.util.Map">
+		select * from company
+		<choose>
+			<when test="searchType == 'name'">
+				WHERE upper(com_name) LIKE '%' || upper(#{searchText}) || '%'
+			</when>
+			<when test="searchType =='id'">
+				WHERE upper(com_id) LIKE '%' || upper(#{searchText}) || '%'
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+	 
+	<!-- 학생관리의 회사 수정 팝업애서 검색과 기준에 의해 나눠지는 리스트 뽑기 select -->
+	<select id="selectCriteriaBySearchCompanyListFromPopUp" resultMap="comResult">
+		SELECT 
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree, com_tel
+		FROM (SELECT ROW_NUMBER() OVER (ORDER BY com_reg_date desc) NUM,
+		com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date,
+		SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name,
+		com_manager_phone, com_manager_email, com_contract_stat,
+		com_contract_type, com_homePage, com_address, com_contract_agree, com_tel 
+		from company
+		<choose>
+			<when test="searchType == 'name'">
+				WHERE com_name LIKE '%' || #{searchText} || '%'
+			</when>
+			<when test="searchType == 'id'">
+				WHERE com_id LIKE '%' || #{searchText} || '%'
+			</when>
+		</choose>
+		ORDER BY com_reg_date desc)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum} - 1
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+		order by com_reg_date desc
+	</select>
+	
+	<!-- 회사 등록 쿼리 -->
+	<insert id="insertCompany" parameterType="companyVO">
+	<![CDATA[
+		insert into company
+		(com_id, com_name, com_contract_name, com_manager_phone, com_manager_email, com_contract_stat, com_contract_type, com_homepage, com_address, com_contract_agree, com_tel) 
+		values
+		(#{id}, #{name}, #{contractName}, #{managerPhone}, #{managerEmail}, #{contractStat}, #{contractType}, #{homePage}, #{address}, #{contractAgree}, #{companyTel})
+	]]>
+	</insert>
+	
+	<!-- 회사명 선택해서 상세창 나오는 매퍼(회사관리와 협력회사에서 공통으로 적용) -->
+	<select id="selectCompany" resultMap="comResult" parameterType="String">
+		<![CDATA[
+			select com_id, com_name, SUBSTR(com_reg_date, 0, 10) as com_reg_date, SUBSTR(com_mod_date,0,10) as com_mod_date, com_contract_name, 
+			com_manager_phone, com_manager_email, com_contract_stat, com_contract_type, com_homepage, com_address, com_contract_agree, com_tel from company 
+			where com_id = #{id}
+		]]>
+	</select>
+	
+	<!-- 회사 수정 쿼리 -->
+	<update id="updateCompany" parameterType="companyVO">
+	<![CDATA[
+		update company
+	     set 
+	     com_id=#{id}, com_name=#{name}, com_contract_name=#{contractName}, com_manager_phone=#{managerPhone}, 
+	     com_manager_email=#{managerEmail}, com_contract_stat=#{contractStat}, com_contract_type=#{contractType}, com_homepage=#{homePage}, com_mod_date=#{modDate},
+	     com_address=#{address}, com_contract_agree=#{contractAgree}, com_tel=#{companyTel} 
+	     where com_id=#{id}
+	]]>
+	</update>
+	
+	<!-- 회사 삭제 쿼리 -->
+	<update id="deleteCompany" parameterType="String">
+		<![CDATA[
+		update company set com_contract_type = '탈퇴'
+		where com_id=#{id}
+		]]>
+	</update>
 </mapper>

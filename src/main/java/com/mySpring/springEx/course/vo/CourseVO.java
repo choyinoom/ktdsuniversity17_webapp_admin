@@ -18,6 +18,9 @@ public class CourseVO {
 	private String joinDate;
 	private String bannerImg;
 	private int slbId;
+	private String crsrsdate;
+	private String crsredate;
+	
 	
 	private SyllabusVO syllabusVO;
 	
@@ -25,7 +28,7 @@ public class CourseVO {
 	}
 
 	public CourseVO(int id, String startDate, String endDate, String startTime, String endTime, int capacity,
-			String classroom, String joinDate, String bannerImg, int slbId, SyllabusVO syllabusVO) {
+			String classroom, String joinDate, String bannerImg, int slbId, String crsrsdate, String crsredate, SyllabusVO syllabusVO) {
 		this.id = id;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -36,6 +39,8 @@ public class CourseVO {
 		this.joinDate = joinDate;
 		this.bannerImg = bannerImg;
 		this.slbId = slbId;
+		this.crsrsdate = crsrsdate;
+		this.crsredate = crsredate;
 		this.syllabusVO = syllabusVO;
 	}
 
@@ -127,6 +132,22 @@ public class CourseVO {
 
 	public void setSyllabusVO(SyllabusVO syllabusVO) {
 		this.syllabusVO = syllabusVO;
+	}
+
+	public String getCrsrsdate() {
+		return crsrsdate;
+	}
+
+	public void setCrsrsdate(String crsrsdate) {
+		this.crsrsdate = crsrsdate;
+	}
+
+	public String getCrsredate() {
+		return crsredate;
+	}
+
+	public void setCrsredate(String crsredate) {
+		this.crsredate = crsredate;
 	}
 	
 	

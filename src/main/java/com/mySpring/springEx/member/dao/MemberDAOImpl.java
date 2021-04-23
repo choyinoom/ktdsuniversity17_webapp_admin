@@ -35,6 +35,17 @@ public class MemberDAOImpl implements MemberDAO {
 		return membersBySearchList;
 	}
 	
+	//팝업용
+	@Override
+	public List selectBySearchMemberListPopup(String searchType, String searchText) throws DataAccessException {
+		List<MemberVO> membersBySearchList = null;
+		Map<String, String> mapSearch = new HashMap<String, String>();
+		mapSearch.put("searchType", searchType);
+		mapSearch.put("searchText", searchText);
+		membersBySearchList = sqlSession.selectList("mapper.member.selectBySearchMemberListPopup", mapSearch);
+		return membersBySearchList;
+	}
+	
 	//페이징 리스트 뽑아오기 메서드
 	@Override
 	public List<MemberVO> listPaging(int page) throws DataAccessException {
@@ -55,6 +66,12 @@ public class MemberDAOImpl implements MemberDAO {
 	@Override
 	public List selectCriteriaBySearch(Criteria criteria) throws DataAccessException {
 		return sqlSession.selectList("mapper.member.selectCriteriaBySearchMemberList", criteria);
+	}
+	
+	//팝업용
+	@Override
+	public List selectCriteriaBySearchPopup(Criteria criteria) throws DataAccessException {
+		return sqlSession.selectList("mapper.member.selectCriteriaBySearchMemberListPopup", criteria);
 	}
 	
 	@Override

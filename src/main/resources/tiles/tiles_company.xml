@@ -10,7 +10,7 @@
       <put-attribute name="body" value="/WEB-INF/views/company/companiesList.jsp" />
    </definition>
    
-   <definition name="/company/selectCompany" extends="baseLayout">
+   <definition name="/company/companyForm" extends="baseLayout">
       <put-attribute name="title" value="회사상세설명창" />
       <put-attribute name="side" value="/WEB-INF/views/common/sideMember.jsp" />
       <put-attribute name="body" value="/WEB-INF/views/company/companyDescription.jsp" />
@@ -19,5 +19,17 @@
    <definition name="/company/popUp"  template="/WEB-INF/views/common/popUp/layout_popUp.jsp">
       <put-attribute name="title" value="팝업창" />
       <put-attribute name="body" value="/WEB-INF/views/company/popUp.jsp" />
+   </definition>
+   
+   <definition name="/company/listPartners" extends="baseLayout">
+   	  <put-attribute name="title" value="협력회사 목록창" />
+      <put-attribute name="side" value="/WEB-INF/views/common/sideMember.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/company/partnersList.jsp" />
+   </definition>
+   
+   <definition name="/company/addCompanyForm" extends="baseLayout">
+   	  <put-attribute name="title" value="회사 등록창" />
+   	  <put-attribute name="side" value="/WEB-INF/views/common/sideMember.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/company/addCompanyForm.jsp" />
    </definition>
 </tiles-definitions>

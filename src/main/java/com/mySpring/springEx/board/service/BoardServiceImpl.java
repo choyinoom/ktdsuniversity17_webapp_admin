@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mySpring.springEx.board.dao.BoardDAO;
 import com.mySpring.springEx.board.vo.ArticleVO;
+import com.mySpring.springEx.common.paging.Criteria;
 import com.mySpring.springEx.board.vo.ArticleFileVO;
 
 @Service("boardService")
@@ -85,7 +86,20 @@ public class BoardServiceImpl implements BoardService {
 		articlesBySearchList = boardDAO.selectBySearchArticlesList(searchType, searchText);
 		return articlesBySearchList;
 	}
-	 
+	
+	//기준 나누는 메서드 
+	@Override
+	public List listCriteria(Criteria criteria) throws DataAccessException {
+		return boardDAO.listCriteria(criteria);
+	}
+	
+	//검색과 기준에 의해 리스트 나눠지는 메서드
+	@Override
+	public List listCriteriaBySearch(Criteria criteria) throws DataAccessException {
+		List articlesCriteriaBySearch = null;
+		articlesCriteriaBySearch = boardDAO.selectCriteriaBySearch(criteria);
+		return articlesCriteriaBySearch;
+	}
 	 
 }
 	

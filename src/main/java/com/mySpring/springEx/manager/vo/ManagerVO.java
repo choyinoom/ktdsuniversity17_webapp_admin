@@ -2,24 +2,30 @@ package com.mySpring.springEx.manager.vo;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * @author User
+ *
+ */
 @Component("managerVO")
 public class ManagerVO {
 	
 	private String id;
 	private String name;
 	private String pw;
-	private String phone;
-	
+	private String email;
+	private String authorization;
+	private String joindate;
 
 	public ManagerVO() {
 	}
 	
-	public ManagerVO(String id, String name, String pw, String phone) {
-
+	public ManagerVO(String id, String name, String pw, String email, String authorization, String joindate) {
 		this.id = id;
 		this.name = name;
 		this.pw = pw;
-		this.phone = phone;
+		this.email = email;
+		this.authorization = authorization;
+		this.joindate = joindate;
 	}
 	
 	public String getId() {
@@ -46,12 +52,28 @@ public class ManagerVO {
 		this.pw = pw;
 	}
 	
-	public String getPhone() {
-		return phone;
+	public String getemail() {
+		return email;
 	}
 	
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setemail(String phone) {
+		this.email = phone;
+	}
+
+	public String getAuthorization() {
+		return authorization;
+	}
+
+	public void setAuthorization(String authorization) {
+		this.authorization = authorization;
+	}
+
+	public String getJoindate() {
+		return joindate;
+	}
+
+	public void setJoindate(String joindate) {
+		this.joindate = joindate;
 	}
 	
 	

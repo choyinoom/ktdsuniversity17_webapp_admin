@@ -34,6 +34,7 @@ public class EnrollmentVO {
 		this.stat = stat;
 		this.joinDate = joinDate;
 		this.modDate = modDate;
+		this.completeDate = completeDate;
 		this.memberVO = memberVO;
 		this.courseVO = courseVO;
 		this.syllabusVO = syllabusVO;
@@ -94,6 +95,14 @@ public class EnrollmentVO {
 	public void setModDate(String modDate) {
 		this.modDate = modDate;
 	}
+	
+	public String getCompleteDate() {
+		return completeDate;
+	}
+
+	public void setCompleteDate(String completeDate) {
+		this.completeDate = completeDate;
+	}
 
 	public MemberVO getMemberVO() {
 		return memberVO;
@@ -127,6 +136,5 @@ public class EnrollmentVO {
 		this.completeDate = completeDate;
 	}
 
-	
 	
 }

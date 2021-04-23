@@ -8,6 +8,7 @@ request.setCharacterEncoding("UTF-8");
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="side">
+
 	<h1 class="side_title">게시판관리</h1>
 	<ul>
 		<li><a href="${contextPath}/board/listArticles.do" class="no-underline">공지사항</a></li><br>
@@ -17,3 +18,4 @@ request.setCharacterEncoding("UTF-8");
 		<li><a href="#" class="no-underline">이름</a></li> <br>
 	</ul>
 </div>
+

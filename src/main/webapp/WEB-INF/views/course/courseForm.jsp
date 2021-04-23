@@ -60,6 +60,7 @@
 	      <td width="400">
 	      <select name="slbId">
 	      		<option value="" selected></option>
+	      		
 	      		<c:forEach var="syllabus" items="${syllabusesList}" >
 	      			<option  value="${syllabus.id }">${syllabus.name }</option>
 	      		</c:forEach>

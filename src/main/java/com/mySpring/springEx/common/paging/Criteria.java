@@ -7,9 +7,6 @@ public class Criteria {
 	private int perPageNum;
 	private String searchType;
 	private String searchText;
-	
-	
-	
 
 	public Criteria() {
 		this.page = 1;
@@ -46,7 +43,7 @@ public class Criteria {
 	
 	public int getPageStart() {
 		return (this.page - 1) * perPageNum + 1;
-	}
+	} 
 	
 	public String getSearchType() {
 		return searchType;

@@ -8,4 +8,10 @@ public interface ManagerService {
 
 	public ManagerVO login(ManagerVO manager) throws DataAccessException;
 
+	public ManagerVO selectManager(String id);
+
+	public int updateManager(ManagerVO manager);
+
+	
+
 }

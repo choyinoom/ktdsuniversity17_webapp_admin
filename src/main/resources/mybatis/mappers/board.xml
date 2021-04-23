@@ -20,11 +20,16 @@
 	  <result property="artId" column="art_id" />
 	</resultMap>
 
+  	<sql id="article-columns">
+   	<![CDATA[
+   		art_id, art_title, art_join_date, art_contents, art_file, art_important, art_hits 
+   	]]>
+   </sql>
  
   <!-- 공지인것만 리스트 선택 -->
   <select id="selectAllArticlesList" resultMap="articlesResult"   >
     <![CDATA[
-     SELECT art_id, art_title, art_file, art_hits, art_join_date 
+     SELECT art_id, art_title, art_file, art_hits, SUBSTR(art_join_date,0,10) as art_join_date
      from article	
      order by art_id desc
     ]]>
@@ -33,13 +38,12 @@
    <!-- 모든 공지사항 리스트 선택 -->
   <select id="selectImptArticlesList" resultMap="articlesResult"   >
     <![CDATA[
-     SELECT art_id, art_title, art_file, art_hits, art_join_date 
+     SELECT art_id, art_title, art_file, art_hits, SUBSTR(art_join_date,0,10) as art_join_date
      from article	
      where art_important = '공지'
      order by art_id desc
     ]]>
   </select>
-  
   
   	<insert id="insertNewArticle"  parameterType="java.util.Map">
 		<![CDATA[
@@ -79,7 +83,60 @@
          	<when test="searchType == 'title'">       
         	 	WHERE art_title LIKE '%' || #{searchText} || '%'
          	</when>
+         </choose>
+         order by art_id desc
+	</select>
+	
+	 
+	<!-- 페이지 전체 리시트 뽑아주는 select list_paging  -->
+	<select id="selectArticleListByPaging" resultMap="articlesResult">
+		SELECT art_id, art_title, SUBSTR(art_join_date,0,10) as art_join_date, art_contents, art_file, art_important, art_hits  
+		FROM	(select ROW_NUMBER() OVER (ORDER BY art_id) NUM, art_id, art_title, SUBSTR(art_join_date,0,10) as art_join_date, art_contents, art_file, art_important, art_hits 
+				from article 
+				order by art_id) 
+		WHERE NUM BETWEEN #{page} AND 10
+	</select>
+	
+	<!-- 기준으로 페이지 리시트 나누는 select list.jsp -->
+	<select id="listCriteria" resultMap="articlesResult">
+		SELECT art_id, art_title, SUBSTR(art_join_date,0,10) as art_join_date, art_contents, art_file, art_important, art_hits 
+		FROM (select ROW_NUMBER() OVER (ORDER BY art_id desc) NUM, art_id, art_title, SUBSTR(art_join_date,0,10) as art_join_date, art_contents, art_file, art_important, art_hits 
+				from article 
+				order by art_id desc) 
+		WHERE NUM BETWEEN #{pageStart} 
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum}
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+		</select>
+	
+	<!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select  -->
+	<select id="selectCriteriaBySearchArticleList" resultMap="articlesResult">
+		SELECT
+			<include refid="article-columns"></include>
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY art_id desc) NUM, art_id, art_title, SUBSTR(art_join_date,0,10) as art_join_date, art_contents, art_file, art_important, art_hits
+			from article
+			 <choose>
+         		<when test="searchType == 'title'">       
+        	 		WHERE art_title LIKE '%' || #{searchText} || '%'
+         		</when>
          	</choose>
+		ORDER BY art_id)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum}
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+		order by art_id desc
 	</select>
   
   <delete id="deleteArticle"  parameterType="int">
@@ -90,14 +147,14 @@
   
   <update id="updateArticle"  parameterType="java.util.Map">
 			UPDATE article
-			SET art_important = #{important}, art_title = #{title}, art_contents = #{contents}
+			SET art_important = #{important}, art_title = #{title}, art_contents = #{contents}, art_file = #{file}
 			WHERE art_id = #{id}
 	</update>
 	
-	<update id="updateArticleFile"  parameterType="java.util.Map">
+	<update id="updateArticleFile" parameterType="java.util.Map">
 			UPDATE article_file
 			SET file_name = #{name}	 
-			WHERE art_id = #{artId}
+			WHERE art_id = #{id}	
 	</update>
   
    <select id="selectNewArticleId" resultType="int"  >

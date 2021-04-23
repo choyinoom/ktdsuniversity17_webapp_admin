@@ -11,11 +11,16 @@
       <put-attribute name="body" value="/WEB-INF/views/enrollment/enrollmentsList.jsp" />
    </definition>
    
-   <!-- 수료관리 추가 04/08 -->
-   <definition name="/enrollment/listCompletion" extends="baseLayout">
-      <put-attribute name="title" value="수료관리목록창" />
+   <definition name="/enrollment/informationEnrollment" extends="baseLayout">
+      <put-attribute name="title" value="수강신청상세창" />
       <put-attribute name="side" value="/WEB-INF/views/common/sideEnrollment.jsp" />
-      <put-attribute name="body" value="/WEB-INF/views/enrollment/completionList.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/enrollment/enrollmentInformation.jsp" />
+   </definition>
+   
+   <definition name="/enrollment/enrollmentForm" extends="baseLayout">
+      <put-attribute name="title" value="수강신청등록" />
+      <put-attribute name="side" value="/WEB-INF/views/common/sideEnrollment.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/enrollment/enrollmentForm.jsp" />
    </definition>
    
     <!-- 수료증출력 추가 04/11 -->

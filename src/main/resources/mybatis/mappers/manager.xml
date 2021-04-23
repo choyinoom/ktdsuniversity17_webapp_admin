@@ -8,7 +8,9 @@
 		<result property="id" column="mgr_id" />
 		<result property="name" column="mgr_name" />
 		<result property="pw" column="mgr_pw" />
-		<result property="phone" column="mgr_phone" />
+		<result property="email" column="mgr_email" />
+		<result property="authorization" column="mgr_authorization" />
+		<result property="joindate" column="mgr_join_date" />
 	</resultMap> 
 	
 	<select id="loginById"  resultMap="mgrResult"   parameterType="managerVO" >
@@ -18,4 +20,14 @@
 	]]>
 	</select>
 	
+
+	
+	<update id="updateManager"  parameterType="managerVO" >
+	<![CDATA[
+		update manager
+	     set mgr_name=#{name}, mgr_pw=#{pw}, mgr_email=#{email}, mgr_authorization=#{authorization}, mgr_join_date=TO_CHAR(SYSDATE,'YYYY-MM-DD')
+	     where 
+	     mgr_id=#{id}
+	]]>
+	</update> 
 </mapper>

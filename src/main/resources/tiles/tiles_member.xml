@@ -55,6 +55,11 @@
       <put-attribute name="body" value="/WEB-INF/views/member/memberInformation.jsp" />
    </definition>
    
+   <definition name="/member/memberSearchPopUp"  template="/WEB-INF/views/common/popUp/layout_popUp.jsp">
+      <put-attribute name="title" value="아이디검색팝업창" />
+      <put-attribute name="body" value="/WEB-INF/views/member/memberSearchPopUp.jsp" />
+	</definition>
+	
    <!-- 페이지 기준 나눠주는 페이지 -->
    <definition name="/member/list_criteria" extends="baseLayout">
       <put-attribute name="title" value="기준창" />

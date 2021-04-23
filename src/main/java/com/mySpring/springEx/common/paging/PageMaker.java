@@ -42,6 +42,18 @@ public class PageMaker {
 		
 		next = (endPage * criteria.getPerPageNum() >= totalCount) ? false : true;
 	}
+	
+	/* 
+	 if (page == startPage ) { 
+	 	impArticlesList = boardService.listImptArticles();
+	 	
+	 		 }
+	 else {
+	 	articlesList = boardService.listArticles();
+	 	
+	 		 }
+	  
+	 */
 
 	public boolean isPrev() {
 		return prev;

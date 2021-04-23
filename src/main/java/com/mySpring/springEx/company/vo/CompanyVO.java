@@ -13,13 +13,17 @@ public class CompanyVO {
 	private String managerEmail;
 	private String contractStat;
 	private String contractType;
+	private String homePage;
+	private String address;
+	private String contractAgree;
+	private String companyTel;
 	
 	public CompanyVO() {
 		
 	}
 	
 	public CompanyVO(String id, String name, String regDate, String modDate, String contractName,
-			String managerPhone, String managerEmail, String contractStat, String contractType) {
+			String managerPhone, String managerEmail, String contractStat, String contractType, String homePage, String address, String contractAgree, String companyTel) {
 		this.id = id;
 		this.name = name;
 		this.regDate = regDate;
@@ -29,6 +33,10 @@ public class CompanyVO {
 		this.managerEmail = managerEmail;
 		this.contractStat = contractStat;
 		this.contractType = contractType;
+		this.homePage = homePage;
+		this.address = address;
+		this.contractAgree = contractAgree;
+		this.companyTel = companyTel;
 	}
 
 	public String getid() {
@@ -101,6 +109,39 @@ public class CompanyVO {
 	
 	public void setContractType(String contractType) {
 		this.contractType = contractType;
+	}
+
+	public String getHomePage() {
+		return homePage;
+	}
+
+	public void setHomePage(String homePage) {
+		this.homePage = homePage;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	
+	public String getContractAgree() {
+		return contractAgree;
+	}
+
+	public void setContractAgree(String contractAgree) {
+		this.contractAgree = contractAgree;
+	}
+
+	public String getCompanyTel() {
+		return companyTel;
+	}
+
+	public void setCompanyTel(String companyTel) {
+		this.companyTel = companyTel;
 	}
 	
 	

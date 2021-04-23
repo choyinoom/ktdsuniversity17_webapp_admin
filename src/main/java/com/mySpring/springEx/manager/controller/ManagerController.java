@@ -15,4 +15,11 @@ public interface ManagerController {
 
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+	
+
+	public ModelAndView updateManager(ManagerVO manager, HttpServletRequest request, HttpServletResponse response)
+			throws Exception;
+
+	public ModelAndView updateManagerForm(HttpServletRequest request, HttpServletResponse response)
+			throws Exception;
 }

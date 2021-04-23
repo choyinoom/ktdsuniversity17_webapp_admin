@@ -29,7 +29,6 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public int addCourse(CourseVO course) throws DataAccessException {
 		return courseDAO.insertCourse(course);
-		
 	}
 
 	@Override

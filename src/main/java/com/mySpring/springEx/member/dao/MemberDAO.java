@@ -19,5 +19,7 @@ public interface MemberDAO {
 	public MemberVO selectMember(String id) throws DataAccessException;
 	public int selectCheckMember(String id) throws DataAccessException;
 	public List selectCriteriaBySearch(Criteria criteria) throws DataAccessException;
+	public List selectBySearchMemberListPopup(String searchType, String searchText) throws DataAccessException;
+	public List selectCriteriaBySearchPopup(Criteria criteria) throws DataAccessException;
 	
 }

@@ -26,6 +26,50 @@
       <result property="joinDate" column="joinDate" />
    </resultMap> -->
    
+   <!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select (팝업)  -->
+	<select id="selectCriteriaBySearchMemberListPopup" resultMap="memResult">
+		SELECT
+			<include refid="member-columns"></include>
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY mem_join_date) NUM, <include refid="member-columns"></include>
+			from member
+			<choose>
+	         	<when test="searchType == 'name'">
+	         		WHERE mem_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == 'id'">
+	         		WHERE mem_id LIKE '%' || #{searchText} || '%'
+	         	</when>
+         	</choose>
+		ORDER BY mem_join_date)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum}
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) - 1
+			</when>
+		</choose>
+		order by mem_join_date
+	</select>
+	
+	<!-- 팝업 -->
+	<select id="selectBySearchMemberListPopup" resultMap="memResult" parameterType="java.util.Map" >
+         select * from member         
+	     <choose>
+         	<when test="searchType == 'name'">
+         		WHERE mem_name LIKE '%' || #{searchText} || '%'
+         	</when>
+         	<when test="searchType == 'id'">
+         		WHERE mem_id LIKE '%' || #{searchText} || '%'
+         	</when>
+         </choose>
+	</select>
+   
+   
+   <!-- VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV -->
+   
    <sql id="member-columns">
    	<![CDATA[
    		mem_id, mem_pw, mem_name, mem_phone, mem_email, mem_subscription, mem_company_name,
@@ -33,11 +77,32 @@
    	]]>
    </sql>
 
-	
-	<select id="selectAllMemberList" resultMap="memResult">
-          select 
-          	<include refid="member-columns"></include>	
-          from member
+	<!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select  -->
+	<select id="selectCriteriaBySearchMemberList" resultMap="memResult">
+		SELECT
+			<include refid="member-columns"></include>
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY mem_join_date) NUM, <include refid="member-columns"></include>
+			from member
+			<choose>
+	         	<when test="searchType == 'name'">
+	         		WHERE mem_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+	         	<when test="searchType == 'companyName'">
+	         		WHERE mem_company_name LIKE '%' || #{searchText} || '%'
+	         	</when>
+         	</choose>
+		ORDER BY mem_join_date)
+		WHERE NUM BETWEEN #{pageStart}
+		<choose>
+			<when test="#{perPageNum} == '10'">
+				AND #{perPageNum}
+			</when>
+			<when test="#{perPageNum} != '10'">
+				AND (#{perPageNum} + #{pageStart}) -1
+			</when>
+		</choose>
+		order by mem_join_date
 	</select>
 	
 	<select id="selectBySearchMemberList" resultMap="memResult" parameterType="java.util.Map" >
@@ -75,40 +140,23 @@
 				AND #{perPageNum}
 			</when>
 			<when test="#{perPageNum} != '10'">
-				AND (#{perPageNum} + #{pageStart})
+				AND (#{perPageNum} + #{pageStart}) -1
 			</when>
 		</choose>
 		order by mem_join_date
 	</select>
 	
-	<!-- 검색과 기준에 의해 나눠지는 리스트 뽑기 select  -->
-	<select id="selectCriteriaBySearchMemberList" resultMap="memResult">
-		SELECT
-			<include refid="member-columns"></include>
-		FROM (
-			SELECT ROW_NUMBER() OVER (ORDER BY mem_join_date) NUM, <include refid="member-columns"></include>
-			from member
-			<choose>
-	         	<when test="searchType == 'name'">
-	         		WHERE mem_name LIKE '%' || #{searchText} || '%'
-	         	</when>
-	         	<when test="searchType == 'companyName'">
-	         		WHERE mem_company_name LIKE '%' || #{searchText} || '%'
-	         	</when>
-         	</choose>
-		ORDER BY mem_join_date)
-		WHERE NUM BETWEEN #{pageStart}
-		<choose>
-			<when test="#{perPageNum} == '10'">
-				AND #{perPageNum}
-			</when>
-			<when test="#{perPageNum} != '10'">
-				AND (#{perPageNum} + #{pageStart})
-			</when>
-		</choose>
-		order by mem_join_date
-	</select>
 	
+		
+		
+		
+		
+		
+	<select id="selectAllMemberList" resultMap="memResult">
+          select 
+          	<include refid="member-columns"></include>	
+          from member
+	</select>
 	
 	<select id="selectCheckMember" resultType="int" parameterType="String" >
 	 <![CDATA[

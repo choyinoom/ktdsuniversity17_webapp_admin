@@ -23,4 +23,10 @@
       <put-attribute name="body" value="/WEB-INF/views/manager/loginForm.jsp" />
    </definition>
    
+    <definition name="/manager/modManagerForm" extends="baseLayout">
+      <put-attribute name="title" value="관리자 정보 관리" />
+      <put-attribute name="side" value="/WEB-INF/views/common/sideMember.jsp" />
+      <put-attribute name="body" value="/WEB-INF/views/manager/modManagerForm.jsp" />
+   </definition>
+   
 </tiles-definitions>

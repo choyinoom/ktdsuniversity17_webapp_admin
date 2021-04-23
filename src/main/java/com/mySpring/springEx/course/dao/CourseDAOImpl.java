@@ -25,13 +25,6 @@ public class CourseDAOImpl implements CourseDAO{
 	@Override
 	public int insertCourse(CourseVO courseVO)  throws DataAccessException{
 		int result = sqlSession.insert("mapper.course.insertCourse", courseVO);
-		System.out.println(courseVO.getId());
-		System.out.println(courseVO.getCapacity());
-		System.out.println(courseVO.getClassroom());
-		System.out.println(courseVO.getEndDate());
-		System.out.println(courseVO.getEndTime());
-		System.out.println(courseVO.getBannerImg());
-		System.out.println(courseVO.getJoinDate());
 		return result;
 		
 	}

@@ -91,6 +91,7 @@ request.setCharacterEncoding("UTF-8");
 </script>
 
 <body>
+
 	<!-- controller에서 보낸 값 받아서 저장 -->
 	<%
 	String searchType = request.getParameter("searchType");
@@ -140,6 +141,7 @@ request.setCharacterEncoding("UTF-8");
 					<option value="companyName">회사명</option>
 				</c:if>
 			</select>
+
 			<!-- 검색 값이 있냐 없냐에 따라 값 뛰우는거 설정 -->
 			<c:choose>
 				<c:when test="${not empty searchText }">
@@ -245,8 +247,5 @@ request.setCharacterEncoding("UTF-8");
 			onclick="location.href='${contextPath}/member/memberForm.do'">등록</button>
 		<button type="button" onclick='getCheckList()'>삭제</button>
 	</div>
-	<!-- 등록 버튼 추가해서 함수 실행하게 만들어야함 -->
-	<%-- 
-      <td><a href="${contextPath}/member/removeMember.do?id=${member.id }">삭제</a></td> --%>
 </body>
 </html>

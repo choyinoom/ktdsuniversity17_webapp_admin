@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.mySpring.springEx.board.vo.ArticleVO;
+import com.mySpring.springEx.common.paging.Criteria;
 import com.mySpring.springEx.member.vo.MemberVO;
 import com.mySpring.springEx.board.vo.ArticleFileVO;
 
@@ -109,8 +110,31 @@ public class BoardDAOImpl implements BoardDAO {
 		return sqlSession.selectOne("mapper.board.selectNewArticleId");
 	}
 	
-	private int selectNewArticleFileId() throws DataAccessException {
+	@Override
+	public int selectNewArticleFileId() throws DataAccessException {
 		return sqlSession.selectOne("mapper.board.selectNewArticleFileId");
+	}
+	
+	//페이징 리스트 뽑아오기 메서드
+	@Override
+	public List<ArticleVO> listPaging(int page) throws DataAccessException {
+		if (page <= 0) {
+			page = 1;
+		}
+		page = (page - 1) * 10;
+		return sqlSession.selectList("mapper.board.selectArticleListByPaging", page);
+	}
+		
+	// 페이지 기준 설정 메서드
+	@Override
+	public List<ArticleVO> listCriteria(Criteria criteria) throws DataAccessException {
+		return sqlSession.selectList("mapper.board.listCriteria", criteria);
+	}
+		
+	//criteria에 의해 리스트 나누는 메서드
+	@Override
+	public List selectCriteriaBySearch(Criteria criteria) throws DataAccessException {
+		return sqlSession.selectList("mapper.board.selectCriteriaBySearchArticleList", criteria);
 	}
 	
 	//占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占싸듸옙
