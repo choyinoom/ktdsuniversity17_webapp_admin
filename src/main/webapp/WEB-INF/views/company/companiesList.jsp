@@ -179,25 +179,21 @@ request.setCharacterEncoding("UTF-8");
 		<div class="searchType">
 			<select name="searchType" id="searchType">
 				<c:if test="${empty searchType}">
-					<option value="name" selected>선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractStat">상태</option>
 				</c:if>
 				<c:if test="${searchType == 'name'}">
-					<option value="name">선택</option>
 					<option value="name" selected>회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractStat">상태</option>
 				</c:if>
 				<c:if test="${searchType == 'contractName'}">
-					<option value="name">선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName" selected>담당자</option>
 					<option value="contractStat">상태</option>
 				</c:if>
 				<c:if test="${searchType == 'contractStat'}">
-					<option value="name">선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractStat" selected>상태</option>
@@ -223,16 +219,13 @@ request.setCharacterEncoding("UTF-8");
 
 
 	<!-- 엑셀 다운로드 버튼 -->
-	<form action="${contextPath}/partner/partnersExcelDownload.do" method="post">
+	<form action="${contextPath}/company/excelDownload.do" method="post">
 		<div id="type_color">
-			<div style="width: 47em;">
-			<span style="color: black">협약상태 구분: </span><span style="color: red">●협약서없음
-			</span><span style="color: green"> ●상호변경 </span><span style="color: black">
-				●협약완료 </span> <span style="color: blue"> ●협약서사본</span><span
-				style="color: #dd42f5"> ●탈퇴</span>
+			<div style="width: 40.3em;">
+			<span style="color: black">협약상태 구분:</span><span style="color: black"> ●협약완료</span><span style="color: blue"> ●협약서사본</span><span style="color: red"> ●협약서없음</span><span style="color: green"> ●상호변경</span>
 			</div>
 			<div class="memberButton" id="mem1">
-				<button type="button" id="enrollButton"	onclick="location.href='${contextPath}/company/addCompanyForm.do'">등록</button>
+				<button type="button" id="enrollButton"	onclick="location.href='${contextPath}/company/addCompanyForm.do?page=${page}&searchText=${searchText}&searchType=${searchType}&perPage=${perPage}'">등록</button>
 				<button type="button" onclick='getCheckList()'>삭제</button>
 				<input type="submit" value='엑셀 다운로드' id="excel">
 			</div>
@@ -252,7 +245,7 @@ request.setCharacterEncoding("UTF-8");
 		<c:choose>
 			<c:when test="${empty companiesList }">
 				<tr height="10">
-					<td colspan="4">
+					<td colspan="7">
 						<p align="center">
 							<b><span style="font-size: 9pt;">등록된 회사가 없습니다.</span></b>
 						</p>
