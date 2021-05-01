@@ -242,7 +242,7 @@ input:focus {
 				</select>
 				<td width="10%" class="td1"><p align="right">회사명</p></td>
 				<td width="20%" class="td1">
-				<input type="text" name="name" id=t1 required pattern="^[가-힣]+$"></td>
+				<input type="text" name="name" id=t1 required></td>
 			</tr>
 
 			<tr>

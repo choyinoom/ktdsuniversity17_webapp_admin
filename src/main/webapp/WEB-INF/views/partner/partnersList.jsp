@@ -146,25 +146,21 @@ request.setCharacterEncoding("UTF-8");
 		<div class="searchType">
 			<select id="searchType" name="searchType">
 				<c:if test="${empty searchType}">
-					<option value="name" selected>선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractType">협약 상태</option>
 				</c:if>
 				<c:if test="${searchType == 'name' }">
-					<option value="name">선택</option>
 					<option value="name" selected>회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractType">협약 상태</option>
 				</c:if>
 				<c:if test="${searchType == 'contractName' }">
-					<option value="name">선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName" selected>담당자</option>
 					<option value="contractType">협약 상태</option>
 				</c:if>
 				<c:if test="${searchType == 'contractType' }">
-					<option value="name">선택</option>
 					<option value="name">회사명</option>
 					<option value="contractName">담당자</option>
 					<option value="contractType" selected>협약 상태</option>
@@ -191,10 +187,8 @@ request.setCharacterEncoding("UTF-8");
 	<form action="${contextPath}/partner/partnersExcelDownload.do" method="post">
 		<div id="type_color">
 			<div>
-			<span style="color: black">협약상태 구분: </span><span style="color: red">●협약서없음
-			</span><span style="color: green"> ●상호변경 </span><span style="color: black">
-				●협약완료 </span> <span style="color: blue"> ●협약서사본</span><span
-				style="color: #dd42f5"> ●탈퇴</span>
+			<span style="color: black">협약상태 구분: </span><span style="color: black">
+				●협약완료 </span><span style="color: blue">●협약서사본 </span><span style="color: red">●협약서없음 </span><span style="color: green">●상호변경</span>
 			</div>
 		<input type="submit" value='엑셀 다운로드' id="excel">
 		</div>
@@ -212,8 +206,8 @@ request.setCharacterEncoding("UTF-8");
 		<c:choose>
 			<c:when test="${empty partnersList}">
 				<tr align="center">
-					<td class=line2 width="15%"><b><span
-							style="font-size: 9pt;">등록된 회사가 없습니다.</span></b></td>
+					<td class=line2 colspan="7">
+					<b><span style="font-size: 9pt;">등록된 회사가 없습니다.</span></b></td>
 				</tr>
 			</c:when>
 			<c:when test="${not empty partnersList}">
