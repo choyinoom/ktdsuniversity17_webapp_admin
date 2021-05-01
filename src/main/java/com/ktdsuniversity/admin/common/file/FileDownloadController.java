@@ -15,8 +15,7 @@ public class FileDownloadController {
 
 	@RequestMapping("fileDown.do")
 	public ModelAndView filedown(HttpServletRequest request, String filename, String folderName) throws Exception {
-		String path = ARTICLE_IMAGE_REPO;
-		path += folderName + "/";
+		String path = ARTICLE_IMAGE_REPO + "/" + folderName + "/";
 
 		HashMap map = new HashMap();
 		map.put("path", path);
