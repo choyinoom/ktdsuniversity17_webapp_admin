@@ -11,18 +11,18 @@
 
 	 
 	<typeAliases>
-		<typeAlias type="com.mySpring.springEx.member.vo.MemberVO"  alias="memberVO" />
-		<typeAlias type="com.mySpring.springEx.board.vo.ArticleVO"  alias="articleVO" />
-		<typeAlias type="com.mySpring.springEx.board.vo.ArticleFileVO"  alias="articleFileVO" />
-		<typeAlias type="com.mySpring.springEx.course.vo.CourseVO"  alias="courseVO" />
-		<typeAlias type="com.mySpring.springEx.syllabus.vo.SyllabusVO"  alias="syllabusVO" />
-		<typeAlias type="com.mySpring.springEx.manager.vo.ManagerVO"  alias="managerVO" />
-		<typeAlias type="com.mySpring.springEx.company.vo.CompanyVO"  alias="companyVO" />
-		<typeAlias type="com.mySpring.springEx.enrollment.vo.EnrollmentVO"  alias="enrollmentVO" />
-		<typeAlias type="com.mySpring.springEx.enrollment.vo.EventCompletionLogVO"  alias="EventCompletionLogVO" />
-		<typeAlias type="com.mySpring.springEx.courseCategory.vo.CourseCategoryVO"  alias="courseCategoryVO" />
-		<typeAlias type="com.mySpring.springEx.survey.vo.SurveyVO"  alias="SurveyVO" />
-		<typeAlias type="com.mySpring.springEx.event_security_log.vo.Event_security_logVO"  alias="Event_security_logVO" />
-		<typeAlias type="com.mySpring.springEx.satisfaction.vo.SatisfactionVO"  alias="SatisfactionVO" />
+		<typeAlias type="com.ktdsuniversity.admin.member.vo.MemberVO"  alias="memberVO" />
+		<typeAlias type="com.ktdsuniversity.admin.board.vo.ArticleVO"  alias="articleVO" />
+		<typeAlias type="com.ktdsuniversity.admin.board.vo.ArticleFileVO"  alias="articleFileVO" />
+		<typeAlias type="com.ktdsuniversity.admin.course.vo.CourseVO"  alias="courseVO" />
+		<typeAlias type="com.ktdsuniversity.admin.syllabus.vo.SyllabusVO"  alias="syllabusVO" />
+		<typeAlias type="com.ktdsuniversity.admin.manager.vo.ManagerVO"  alias="managerVO" />
+		<typeAlias type="com.ktdsuniversity.admin.company.vo.CompanyVO"  alias="companyVO" />
+		<typeAlias type="com.ktdsuniversity.admin.enrollment.vo.EnrollmentVO"  alias="enrollmentVO" />
+		<typeAlias type="com.ktdsuniversity.admin.enrollment.vo.EventCompletionLogVO"  alias="EventCompletionLogVO" />
+		<typeAlias type="com.ktdsuniversity.admin.courseCategory.vo.CourseCategoryVO"  alias="courseCategoryVO" />
+		<typeAlias type="com.ktdsuniversity.admin.survey.vo.SurveyVO"  alias="SurveyVO" />
+		<typeAlias type="com.ktdsuniversity.admin.event_security_log.vo.Event_security_logVO"  alias="Event_security_logVO" />
+		<typeAlias type="com.ktdsuniversity.admin.satisfaction.vo.SatisfactionVO"  alias="SatisfactionVO" />
 	</typeAliases>
 </configuration>

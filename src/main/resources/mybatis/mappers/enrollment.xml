@@ -278,16 +278,16 @@
    <!-- 등록 페이지 데이터 조회 -->
 	<select id="syllabusCourseEnrollment" resultMap="enrdResult">
 		<![CDATA[
-			SELECT 
-				s.slb_name as slb_name, 
-				c.crs_id as crs_id, 
-				substr(c.crs_start_date, 1, 10) as crs_start_date, substr(c.crs_end_date, 1, 10) as crs_end_date
-			FROM 
-				syllabus s, course c
-			WHERE 
-				s.slb_id = c.slb_id
-				AND sysdate between c.crs_rs_date and crs_re_date
-    	]]>
+		SELECT 
+			s.slb_name as slb_name, 
+			c.crs_id as crs_id, 
+			substr(c.crs_start_date, 1, 10) as crs_start_date, substr(c.crs_end_date, 1, 10) as crs_end_date
+		FROM 
+			syllabus s, course c
+		WHERE 
+			s.slb_id = c.slb_id
+			AND sysdate between to_date(c.crs_rs_date,'YYYY-MM-DD') and to_date(c.crs_re_date,'YYYY-MM-DD')
+		]]>
 	</select>
 
 	<!-- 수강신청 등록 -->

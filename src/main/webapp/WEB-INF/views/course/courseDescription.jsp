@@ -1,4 +1,4 @@
-<%@page import="com.mySpring.springEx.manager.vo.ManagerVO"%>
+<%@page import="com.ktdsuniversity.admin.manager.vo.ManagerVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     isELIgnored="false" %>
@@ -320,7 +320,7 @@
 			       </td>
 		       <td width="50"><p align="right">이미지 배너 </td>
 		      <td width="60" rowspan="2"><div  id="imgViewArea" style="height: 140px; padding-top: 10px;">
-		      <img id="imgArea" src="${contextPath}/resources/image/${courseVO.syllabusVO.id}/${courseVO.syllabusVO.bannerImg}" width="120" height="120" style="position : relative; transform : translateX(-170px);"/></div></td>
+		      <img id="imgArea" src="/server/resources/image/${courseVO.syllabusVO.id}/${courseVO.syllabusVO.bannerImg}" width="120" height="120" style="position : relative; transform : translateX(-170px);"/></div></td>
 		    </tr>
 		    <tr>
 		       <td width="100"><p align="right" >상태</td>

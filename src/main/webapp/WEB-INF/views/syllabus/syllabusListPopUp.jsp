@@ -2,7 +2,6 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
-
 <%
 request.setCharacterEncoding("UTF-8");
 %>
@@ -196,7 +195,7 @@ justify-content: center;
 		var reportName = document.getElementById('reportName'+index).value;
 		opener.document.getElementById('syllabusName').value = name;
 		opener.document.getElementById('slbId').value = slbId;
-		opener.document.getElementById('imgArea').src = '${contextPath}/resources/image/'+slbId+'/'+bannerImg;
+		opener.document.getElementById('imgArea').src = '/server/resources/image/'+slbId+'/'+bannerImg;
 		window.close();
 	}
 	

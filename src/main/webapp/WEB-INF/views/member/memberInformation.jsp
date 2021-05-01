@@ -1,4 +1,4 @@
-	<%@page import="com.mySpring.springEx.manager.vo.ManagerVO"%>
+	<%@page import="com.ktdsuniversity.admin.manager.vo.ManagerVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" 
     isELIgnored="false"  %>

@@ -1,9 +1,10 @@
-<%@page import="com.mySpring.springEx.manager.vo.ManagerVO"%>
+<%@page import="com.ktdsuniversity.admin.manager.vo.ManagerVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
     isELIgnored="false" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%= application.getRealPath("/server") %>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
 <%
    request.setCharacterEncoding("UTF-8");
@@ -443,7 +444,7 @@
 			       </c:choose>
 			       </td>
 		       <td><p align="right">이미지 배너 </td>
-		      <td rowspan="2"><div  id="imgViewArea" style="height: 140px; padding-top: 10px;"><img id="imgArea" src="${contextPath}/resources/image/${courseVO.syllabusVO.id}/${courseVO.syllabusVO.bannerImg}" width="120" height="120" style="position : relative; transform : translateX(-170px);"/></div></td>
+		      <td rowspan="2"><div  id="imgViewArea" style="height: 140px; padding-top: 10px;"><img id="imgArea" src="/server/resources/image/${courseVO.syllabusVO.id}/${courseVO.syllabusVO.bannerImg}" width="120" height="120" style="position : relative; transform : translateX(-170px);"/></div></td>
 		    </tr>
 		    <tr>
 		       <td>상태</td>
